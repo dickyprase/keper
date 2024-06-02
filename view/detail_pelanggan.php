@@ -4,9 +4,15 @@
   <li class="active"><?php echo ucfirst($action) ; ?> Pelanggan</li>
 </ul>
  <?php
- include "./inc/config.php";
- $query=mysql_query("SELECT t_pelanggan.*, t_paket.nama as nama_paket, t_paket.harga from t_pelanggan left join t_paket on t_pelanggan.id_paket=t_paket.id_paket where t_pelanggan.id_pelanggan='$_GET[id]'");
- $data=mysql_fetch_array($query);
+//  $query=mysql_query("SELECT t_pelanggan.*, t_paket.nama as nama_paket, t_paket.harga from t_pelanggan left join t_paket on t_pelanggan.id_paket=t_paket.id_paket where t_pelanggan.id_pelanggan='$_GET[id]'");
+//  $data=mysql_fetch_array($query);
+
+	$query = "SELECT t_pelanggan.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_pelanggan LEFT JOIN t_paket ON t_pelanggan.id_paket = t_paket.id WHERE t_pelanggan.id='" . $_GET['id'] . "'";
+	$result = mysqli_query($koneksi, $query);
+
+	$data = mysqli_fetch_array($result);
+
+
  ?>
 <div class="panel panel-info">
   <div class="panel-heading">
@@ -19,7 +25,7 @@
 						<label class="col-sm-2 control-label">ID Pelanggan</label>
 						<div class="col-sm-10">
 							<label class="col-sm-0 control-label">:</label>
-							<label class="col-sm-0 control-label"><?php echo $data['id_pelanggan']; ?></label>
+							<label class="col-sm-0 control-label"><?php echo $data['id']; ?></label>
 						</div>
 					  </div>					  
 					  <div class="form-group">

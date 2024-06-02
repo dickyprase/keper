@@ -1,10 +1,12 @@
 <?php
-  error_reporting(0);
-  session_start();
+  //error_reporting(0);
+ // session_start();
+  include "./inc/config.php";
   if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
 }else{
 ?>
+
 <ul class="breadcrumb">
   <li><a href="./">Home</a></li>
   <li class="active"><?php echo ucfirst($page) ; ?></li>
@@ -22,28 +24,34 @@
 	      <th>#</th>
 	      <th>ID Pelanggan</th>
 	      <th>Nama</th>
+	      <th>Paket</th>
 	      <th>Alamat</th>
         <th>No HP</th>
+        <th>Email</th>
 	      <th>Aksi</th>
 	    </tr>
   	</thead>
   	<tbody>
-  		<?php
-        include "./inc/config.php";
-        $query=mysql_query("select * from t_pelanggan") or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+  		  <?php
+          $query = "SELECT t_pelanggan.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_pelanggan LEFT JOIN t_paket ON t_pelanggan.id_paket = t_paket.id";
+          $result = mysqli_query($koneksi, $query);
+          $no=1;
+          while ($lihat = mysqli_fetch_array($result)) {
         ?>    
       <tr>
-        <td><?php echo $no++; ?></td>         <!--menampilkan nomor dari variabel no-->
-        <td><?php echo $lihat['id_pelanggan'] ?></td>    <!--menampilkan data id-->
-        <td><?php echo $lihat['nama'] ?></td>     <!--menampilkan data nama-->
-        <td><?php echo $lihat['alamat'] ?></td>      <!--menampilkan data alamat-->
-        <td><?php echo $lihat['no_hp'] ?></td>     <!--menampilkan data nomor hp-->
+        <td><?php echo $no++; ?></td>        
+        <td><?php echo $lihat['id'] ?></td>  
+        <td><?php echo $lihat['nama'] ?></td>   
+        <td><?php echo $lihat['nama_paket'] ?></td>   
+        <td><?php echo $lihat['alamat'] ?></td>      
+        <td><?php echo $lihat['no_hp'] ?></td>    
+        <td><?php echo $lihat['email'] ?></td>    
         <td align="center">
-  				<a href="?page=pelanggan&aksi=detail&id=<?php echo $lihat['id_pelanggan'] ;?>" class="btn btn-success btn-sm" title="Lihat Data"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> 
-  				<a href="?page=pelanggan&aksi=edit&id=<?php echo $lihat['id_pelanggan'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
-  				<a href="?page=pelanggan&aksi=delete&id=<?php echo $lihat['id_pelanggan'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+  				<a href="?page=pelanggan&aksi=detail&id=<?= $lihat['id'] ;?>" class="btn btn-success btn-sm" title="Lihat Data"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> 
+
+  				<a href="?page=pelanggan&aksi=edit&id=<?= $lihat['id'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
+
+  				<a href="?page=pelanggan&aksi=delete&id=<?= $lihat['id'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
   		</td>
       </tr>
       <?php
@@ -61,14 +69,18 @@
 	  <li><a href="#">»</a></li>
 	</ul>
 <?php
-}else if($action == "delete"){
-$hapus=mysql_query("DELETE from t_pelanggan WHERE id_pelanggan='$_GET[id]'") or die(mysql_error());
-echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
-break;
-}else{
-  echo "maaf aksi tidak ditemukan";
-}
+  }else if($action == "delete"){
+    $id = $_GET['id'];
+
+    $query = "DELETE FROM t_pelanggan WHERE id='$id'";
+    if (mysqli_query($koneksi, $query)) {
+        echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
+    } else {
+        die("Gagal menghapus data karena : " . mysqli_error($koneksi));
+    }
+
+  }else{
+    echo "maaf aksi tidak ditemukan";
+  }
+  }
 ?>
-  <?php 
-}
-  ?>

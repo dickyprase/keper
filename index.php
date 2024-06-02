@@ -1,13 +1,16 @@
 <?php
-  error_reporting(0);
+  //error_reporting(0);
   session_start();  
   include "inc/config.php";
-  $profile = mysql_query("SELECT * FROM t_setting limit 1") or die (mysql_error());
-  $seting =mysql_fetch_array($profile);    
-  $_SESSION['level'];
+
+  $query = "SELECT * FROM t_setting LIMIT 1";
+  $result = mysqli_query($koneksi, $query);  
+  $setting = mysqli_fetch_assoc($result);
+
+  //$_SESSION['level'];
   if(empty($_SESSION['username'])){
-  header("location:login.php");
-}else{
+    header("location:login.php");
+  }else{
 
 ?>
 <html>
@@ -30,21 +33,26 @@
   <title>Aplikasi Tagihan Internet - Keper PostNet</title>
   
   <script type="text/javascript" charset="utf-8">
-  function fnHitung() {
-  var angka = bersihPemisah(bersihPemisah(bersihPemisah(bersihPemisah(document.getElementById('inputku').value)))); //input ke dalam angka tanpa titik
-  if (document.getElementById('inputku').value == "") {
-    alert("Jangan Dikosongi");
-    document.getElementById('inputku').focus();//
-    return false;
-  }
-  else
-    if (angka >= 1) {
-    alert("angka aslinya : "+angka);
-    document.getElementById('inputku').focus();
-    document.getElementById('inputku').value = tandaPemisahTitik(angka) ;
-    return false; 
+     function fnHitung() {
+        var inputNilai = document.getElementById('inputku').value;
+        var angka = bersihPemisah(inputNilai);
+
+        if (inputNilai.trim() === "") {
+            alert("Jangan Dikosongi");
+            document.getElementById('inputku').focus();
+            return false;
+        } else if (isNaN(angka)) {
+            alert("Masukkan angka yang valid");
+            document.getElementById('inputku').focus();
+            return false;
+        } else {
+            alert("Angka aslinya: " + angka);
+            document.getElementById('inputku').focus();
+            document.getElementById('inputku').value = tandaPemisahTitik(angka);
+            return false;
+        }
     }
-  }
+
   </script>
 
   <script>
@@ -125,70 +133,71 @@
           
   <div id="kepala">
         <img src="img/logo.png" class="thumbnail span3" style="display: inline; float: left; margin-right: 20px; width: 130px; height: 130px">
-        <h2 style="margin: 15px 0 10px 0; color: #000;"><?php echo $seting['nama'] ?></h2>
-        <div style="color: #000; font-size: 16px; font-family: Tahoma" class="clearfix"><b>Alamat : <?php echo $seting['alamat'] ?></b></div>
+        <h2 style="margin: 15px 0 10px 0; color: #000;"><?php echo $setting['nama'] ?></h2>
+        <div style="color: #000; font-size: 16px; font-family: Tahoma" class="clearfix"><b>Alamat : <?php echo $setting['alamat'] ?></b></div>
       </div>
   
   <div id="isi">
 
   <?php 
-  $page = @$_GET['page'];
-  $action = @$_GET['aksi'];
-  if($page == "pelanggan"){
-    if ($action == ""){
-      include "view/l_pelanggan.php" ;
-    }else if ($action == "tambah"){
-      include "view/f_pelanggan.php" ;
-    }else if ($action == "detail"){
-      include "view/detail_pelanggan.php" ;
-    }else if ($action == "edit"){
-      include "view/u_pelanggan.php" ;
-    }else if ($action == "delete"){
-      include "view/l_pelanggan.php" ;
-    }
-  }else if ($page == "paket"){
-    if ($action == ""){
-      include "view/l_paket.php" ;
-    }else if ($action == "tambah"){
-      include "view/f_paket.php" ;
-    }else if ($action == "edit"){
-      include "view/u_paket.php" ;
-    } else if ($action == "delete"){
-      include "view/l_paket.php" ;
-    }   
-  }else if ($page == "transaksi"){
-    if($action == ""){
-      include "view/l_transaksi.php";
-    }else if($action=="tambah"){
-      include "view/f_transaksi.php";
-    }else if($action=="edit"){
-      include "view/u_transaksi.php";
-    }else if($action=="delete"){
-      include "view/l_transaksi.php";
-    }
+    $page = @$_GET['page'];
+    $action = @$_GET['aksi'];
     
-  }else if ($page == "profile"){
-    include "view/setting.php";
-  }else if ($page == "user"){
-    if($action == ""){
-    include "view/l_user.php";
-    }elseif ($action == "tambah") {
-      include "view/f_user.php";
-    }elseif ($action == "edit") {
-      include "view/u_user.php";
-    }elseif ($action == "delete") {
+    if($page == "pelanggan"){
+      if ($action == ""){
+        include "view/l_pelanggan.php" ;
+      }else if ($action == "tambah"){
+        include "view/f_pelanggan.php" ;
+      }else if ($action == "detail"){
+        include "view/detail_pelanggan.php" ;
+      }else if ($action == "edit"){
+        include "view/u_pelanggan.php" ;
+      }else if ($action == "delete"){
+        include "view/l_pelanggan.php" ;
+      }
+    }else if ($page == "paket"){
+      if ($action == ""){
+        include "view/l_paket.php" ;
+      }else if ($action == "tambah"){
+        include "view/f_paket.php" ;
+      }else if ($action == "edit"){
+        include "view/u_paket.php" ;
+      } else if ($action == "delete"){
+        include "view/l_paket.php" ;
+      }   
+    }else if ($page == "transaksi"){
+      if($action == ""){
+        include "view/l_transaksi.php";
+      }else if($action=="tambah"){
+        include "view/f_transaksi.php";
+      }else if($action=="edit"){
+        include "view/u_transaksi.php";
+      }else if($action=="delete"){
+        include "view/l_transaksi.php";
+      }
+      
+    }else if ($page == "profile"){
+      include "view/setting.php";
+    }else if ($page == "user"){
+      if($action == ""){
       include "view/l_user.php";
-    }
+      }elseif ($action == "tambah") {
+        include "view/f_user.php";
+      }elseif ($action == "edit") {
+        include "view/u_user.php";
+      }elseif ($action == "delete") {
+        include "view/l_user.php";
+      }
 
-  }else if ($page == "rekapbayar"){
-    include "view/rekap_laporan.php";
-  }else if ($page == "logout"){
-    include "logout.php";
-  }else if ($page == ""){
-    include "view/xyz.php" ;
-  }else {
-    include "view/404.php";
-  }
+    }else if ($page == "rekapbayar"){
+      include "view/rekap_laporan.php";
+    }else if ($page == "logout"){
+      include "logout.php";
+    }else if ($page == ""){
+      include "view/xyz.php" ;
+    }else {
+      include "view/404.php";
+    }
   
   ?>
   </div>

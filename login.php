@@ -1,9 +1,9 @@
 <?php
-	error_reporting(0);	
+	//error_reporting(0);	
 	session_start();
 	if($_SESSION['username']){
-	header("location:index.php");
-}else{
+		header("location:index.php");
+	}else{
 ?>
 
 <html>

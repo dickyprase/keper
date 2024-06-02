@@ -99,7 +99,7 @@ $id = $_SESSION['id'];
 }else if($action == "delete"){
 $hapus=mysql_query("DELETE from t_transaksi WHERE id_transaksi='$_GET[id]'") or die(mysql_error());
 echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=transaksi">';
-break;
+
 }else{
   echo "maaf aksi tidak ditemukan";
 }

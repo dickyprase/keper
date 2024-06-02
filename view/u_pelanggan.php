@@ -10,56 +10,61 @@ $id = $_SESSION['id'];
   <li class="active"><?php echo ucfirst($action) ; ?> Data</li>
 </ul>
       <?php
-        include "./inc/config.php";
-        $query=mysql_query("SELECT * from t_pelanggan WHERE id_pelanggan='$_GET[id]' " ) or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+
+          $query = "SELECT * FROM t_pelanggan WHERE id='" . $_GET['id'] . "'";
+          $result = mysqli_query($koneksi, $query);
+
+          $no = 1;
+          while ($lihat = mysqli_fetch_array($result)) {
+
       ?> 
 <form class="form-horizontal" method="POST">
   <fieldset>
     <legend>Update Data Pelanggan</legend>
+    <input type="hidden" name="id" value="<?= $lihat['id'] ?>">
     <div class="form-group">
       <label class="col-sm-2 control-label">ID Pelanggan</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="id" required value="<?php echo $lihat['id_pelanggan'] ;?>">
+        <input disabled type="text" class="form-control" name="id_pel" required value="<?= $lihat['id'] ;?>">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Nama</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="nama" value="<?php echo $lihat['nama'] ;?>">
+        <input type="text" class="form-control" name="nama" value="<?= $lihat['nama'] ;?>">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Alamat</label>
       <div class="col-sm-3">
-        <textarea class="form-control" name="alamat" rows="3"><?php echo $lihat['alamat'] ;?></textarea>
+        <textarea class="form-control" name="alamat" rows="3"><?= $lihat['alamat'] ;?></textarea>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">No HP</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="telpon" value="<?php echo $lihat['no_hp'] ;?>">
+        <input type="text" class="form-control" name="telpon" value="<?= $lihat['no_hp'] ;?>">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Email</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="email" value="<?php echo $lihat['email'] ;?>">
+        <input type="text" class="form-control" name="email" value="<?= $lihat['email'] ;?>">
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Paket</label>
       <div class="col-sm-3">
         <select name="paket" class="form-control">
-        <?php
-          include "./inc/config.php";
-          $pos=mysql_query("select * from t_paket order by id_paket");
-          while($r_pos=mysql_fetch_array($pos) ){
-            ?>
-            <option <?php if( $lihat['id_paket']==$r_pos['id_paket']) {echo "selected"; } ?> value='<?php echo $r_pos['id_paket'] ;?>'><?php echo $r_pos['nama'] ;?></option>
           <?php
-          };
+            $query = "SELECT * FROM t_paket ORDER BY id";
+            $result = mysqli_query($koneksi, $query);
+
+            while ($r_pos = mysqli_fetch_array($result)) {
+              ?>
+              <option <?php if ($lihat['id'] == $r_pos['id']) {echo "selected"; } ?> value='<?php echo $r_pos['id']; ?>'><?php echo $r_pos['nama']; ?></option>
+              <?php
+            }
           ?>
         </select>
       </div>
@@ -82,8 +87,21 @@ $id = $_SESSION['id'];
 ?>
 
   <?php 
-  if(isset($_POST['simpan'])){
-    $query=mysql_query("UPDATE t_pelanggan SET nama='$_POST[nama]', alamat='$_POST[alamat]', no_hp='$_POST[telpon]', email='$_POST[email]', id_paket='$_POST[paket]' WHERE id_pelanggan='$_POST[id]'")or die(mysql_error());
-    echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
-    } 
+
+    if (isset($_POST['simpan'])) {
+      $nama = $_POST['nama'];
+      $alamat = $_POST['alamat'];
+      $telpon = $_POST['telpon'];
+      $email = $_POST['email'];
+      $paket = $_POST['paket'];
+      $id = $_POST['id'];
+  
+      $query = "UPDATE t_pelanggan SET nama='$nama', alamat='$alamat', no_hp='$telpon', email='$email', id_paket='$paket' WHERE id='$id'";
+      if (mysqli_query($koneksi, $query)) {
+          echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
+      } else {
+          die("Gagal menyimpan data karena : " . mysqli_error($conn));
+      }
+    }
+
   ?>

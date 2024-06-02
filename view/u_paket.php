@@ -10,18 +10,20 @@ $id = $_SESSION['id'];
   <li class="active"><?php echo ucfirst($action) ; ?> Data</li>
 </ul>
       <?php
-        include "./inc/config.php";
-        $query=mysql_query("SELECT * from t_paket WHERE id_paket='$_GET[id]' " ) or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+        $query = "SELECT * FROM t_paket WHERE id='" . $_GET['id'] . "'";
+        $result = mysqli_query($koneksi, $query);
+
+        $no = 1;
+        while ($lihat = mysqli_fetch_array($result)) {
       ?> 
 <form class="form-horizontal" method="POST">
   <fieldset>
     <legend>Update Data Paket</legend>
+    <input type="hidden" name="id" value="<?php echo $lihat['id'] ;?>">
     <div class="form-group">
       <label class="col-sm-2 control-label">ID Paket</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="id" value="<?php echo $lihat['id_paket'] ;?>">
+        <input disabled type="text" class="form-control" name="id_paket" value="<?php echo $lihat['id'] ;?>">
       </div>
     </div>
     <div class="form-group">
@@ -37,7 +39,6 @@ $id = $_SESSION['id'];
       </div>
     </div>
    
-   <input type="hidden" name="id_paket" value="<?php echo "$_SESSION[id]" ;?>">
     <div class="form-group">
       <div class="col-sm-10 col-sm-offset-2">
         <button type="reset" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Reset</button>
@@ -52,8 +53,16 @@ $id = $_SESSION['id'];
 };
 ?>
   <?php 
-  if(isset($_POST['simpan'])){
-    $query=mysql_query("UPDATE t_paket SET nama='$_POST[nama]', harga='$_POST[harga]' WHERE id_paket='$_POST[id]'")or die(mysql_error());
-    echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=paket">';
-    } 
+  if (isset($_POST['simpan'])) {
+    $nama = $_POST['nama'];
+    $harga = $_POST['harga'];
+    $id = $_POST['id'];
+
+    $query = "UPDATE t_paket SET nama='$nama', harga='$harga' WHERE id=$id";
+    if (mysqli_query($koneksi, $query)) {
+        echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=paket">';
+    } else {
+        die("Gagal menyimpan data karena : " . mysqli_error($conn));
+    }
+  }
   ?>

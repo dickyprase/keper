@@ -1,5 +1,5 @@
 <?php
-  session_start();
+  //session_start();
   include "./inc/function.php";
   if($_SESSION['level']=="operator"){
   header("location:index.php");
@@ -13,12 +13,6 @@
 <fieldset>
 	<legend>Tambah Data Pelanggan</legend>
 	<form class="form-horizontal"  method="post">
-	  <div class="form-group">
-	    <label class="col-sm-2 control-label">ID Pelanggan</label>
-	    <div class="col-sm-3">
-	      <input type="text" name="id" class="form-control" placeholder="ID Pelanggan">
-	    </div>
-	  </div>
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Nama</label>
 	    <div class="col-sm-4">
@@ -49,10 +43,12 @@
 	      	<select name="paket" onchange="showUser(this.value)" class="form-control">
 				<option value="">--Pilih Paket--</option>
 				<?php
-					include "./inc/config.php";
-					$pos=mysql_query("select * from t_paket order by id_paket");
-					while($r_pos=mysql_fetch_array($pos)){
-						echo "<option value=\"$r_pos[id_paket]\">$r_pos[nama]</option>";
+					$query = "SELECT * FROM t_paket ORDER BY id";
+					$result = mysqli_query($koneksi, $query);
+					while ($r_pos = mysqli_fetch_array($result)) {
+						
+						echo "<option value=".$r_pos['id'].">".$r_pos['nama']."</option>";
+						
 					}
                 ?>
 			</select>
@@ -66,30 +62,32 @@
         <a href="?page=pelanggan" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Batal </a>
 	    </div>
 	  </div>
-	  <?php  
-  	/*
-	  if(isset($_POST['simpan']))
-	  {
-	      mysql_query("INSERT INTO t_pelanggan VALUES ('".$_POST['id']."','".$_POST['nama']."','".$_POST['alamat']."','".$_POST['telpon']."','".$_POST['email']."','".$_POST['paket']."')") or die (mysql_error());
-	      
-	      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
-	  }*/
-	  ?>
 	</form>
 </fieldset>
 
   <?php 
-  if(isset($_POST['simpan'])){
-    $cekdata="SELECT id_pelanggan from t_pelanggan where id_pelanggan='".$_POST['id']."'"; 
-    $ada=mysql_query($cekdata) or die(mysql_error()); 
-    if(mysql_num_rows($ada)>0) { 
-      writeMsg('pelanggan.sama');
-    } else { 
-      $query="INSERT INTO t_pelanggan VALUES ('".$_POST['id']."','".$_POST['nama']."','".$_POST['alamat']."','".$_POST['telpon']."','".$_POST['email']."','".$_POST['paket']."')"; 
-      mysql_query($query) or die("Gagal menyimpan data karena :").mysql_error(); 
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
-    } 
-  } 
+ 
+if (isset($_POST['simpan'])) {
+    $nama = $_POST['nama'];
+    $alamat = $_POST['alamat'];
+    $telpon = $_POST['telpon'];
+    $email = $_POST['email'];
+    $paket = $_POST['paket'];
+
+    $cekdata = "SELECT nama FROM t_pelanggan WHERE nama='$nama'";
+    $ada = mysqli_query($koneksi, $cekdata);
+
+    if (mysqli_num_rows($ada) > 0) {
+        echo '<b>Pelanggan sudah ada</b>';
+    } else {
+        $query = "INSERT INTO t_pelanggan VALUES (null, $paket, '$nama', '$alamat', '$telpon', '$email')";
+        if (mysqli_query($koneksi, $query)) {
+            echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
+        } else {
+            echo "Gagal menyimpan data karena : " . mysqli_error($koneksi);
+        }
+    }
+}
 
   ?>
 

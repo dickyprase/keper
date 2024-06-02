@@ -13,12 +13,6 @@ include "./inc/function.php";
   <fieldset>
     <legend>Tambah Data Paket</legend>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kode Paket</label>
-      <div class="col-sm-3">
-        <input type="text" class="form-control" name="kode" required placeholder="Kode Paket">
-      </div>
-    </div>
-    <div class="form-group">
       <label class="col-sm-2 control-label">Nama Paket</label>
       <div class="col-sm-3">
         <input type="text" class="form-control" name="nama" placeholder="Nama Paket">
@@ -27,7 +21,7 @@ include "./inc/function.php";
     <div class="form-group">
       <label class="col-sm-2 control-label">Harga</label>
       <div class="col-sm-3">
-        <input type="text" id="inputku" onkeydown="return numbersonly(this, event);" onkeyup="javascript:tandaPemisahTitik(this);" class="form-control" name="harga" placeholder="Harga Paket">
+        <input type="number" id="inputku" class="form-control" name="harga" placeholder="Harga Paket">
       </div>
     </div>
     
@@ -43,32 +37,26 @@ include "./inc/function.php";
   </fieldset>
 
 
-  <?php  
-  /*
-  if(isset($_POST['simpan']))
-  {
-      mysql_query("INSERT INTO t_paket (id_paket, nama, harga) VALUES ('".$_POST['kode']."','".$_POST['nama']."','".$_POST['harga']."')") or die (mysql_error());
-      
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=paket">';
-  }*/
-  ?>
 </form>
 
   <?php 
-  if(isset($_POST['simpan'])){
-    $cekdata="SELECT id_paket from t_paket where id_paket='".$_POST['kode']."'";
-    $ada=mysql_query($cekdata) or die(mysql_error()); 
-    $data="SELECT * from t_paket";
-    $aya=mysql_query($data) or die(mysql_error());
-    if(mysql_num_rows($ada)>0) { 
-      writeMsg('paket.sama');
-    } else if(mysql_num_rows($aya)>=5){
-      writeMsg('data.lebih');
-    } else { 
-      $query="INSERT INTO t_paket (id_paket, nama, harga) VALUES ('".$_POST['kode']."','".$_POST['nama']."','".str_replace(".","",$_POST['harga'])."')";
-      mysql_query($query) or die("Gagal menyimpan data karena :").mysql_error(); 
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=paket">';
-    } 
-  } 
+ if (isset($_POST['simpan'])) {
+  $nama = $_POST['nama'];
+  $harga = $_POST['harga'];
+
+  $cekdata = "SELECT nama FROM t_paket WHERE nama='$nama'";
+  $ada = mysqli_query($koneksi, $cekdata);
+
+  if (mysqli_num_rows($ada) > 0) {
+      echo '<b>paket sudah ada</b>';
+  } else {
+      $query = "INSERT INTO t_paket VALUES (null, '$nama', '$harga')";
+      if (mysqli_query($koneksi, $query)) {
+          echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=paket">';
+      } else {
+          echo "Gagal menyimpan data karena : " . mysqli_error($koneksi);
+      }
+  }
+}
 
   ?>
