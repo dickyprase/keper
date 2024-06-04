@@ -14,21 +14,6 @@
 	<legend>Tambah Data User</legend>
 	<form class="form-horizontal"  method="post">	  
 	  <div class="form-group">
-	    <label class="col-sm-2 control-label">ID Pelanggan</label>
-	    <div class="col-sm-4">
-	      	<select name="id" onchange="showUser(this.value)" class="form-control">
-				<option value="">--Pilih ID Pelanggan--</option>
-				<?php
-					include "./inc/config.php";
-					$pos=mysql_query("select * from t_pelanggan order by id_pelanggan");
-					while($r_pos=mysql_fetch_array($pos)){
-						echo "<option value=\"$r_pos[id_pelanggan]\">$r_pos[id_pelanggan]  $r_pos[nama] </option>";
-					}
-                ?>
-			</select>
-	    </div>
-	  </div> 
-	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Username</label>
 	    <div class="col-sm-3">
 	      <input type="text" class="form-control" name="username" placeholder="Username">
@@ -62,19 +47,27 @@
 	  ?>
 	</form>
 </fieldset>
+<?php
 
-  <?php 
-  if(isset($_POST['simpan'])){
-    $cekdata="SELECT id_pelanggan from t_user where id_pelanggan='".$_POST['id']."'"; 
-    $ada=mysql_query($cekdata) or die(mysql_error()); 
-    if(mysql_num_rows($ada)>0) { 
-      writeMsg('pelanggan.sama');
-    } else { 
-      $query="INSERT INTO t_user VALUES ('".$_POST['id']."','".$_POST['username']."','".md5($_POST['password'])."','".$_POST['level']."')"; 
-      mysql_query($query) or die("Gagal menyimpan data karena Id Pelanggan belum dipilih!").mysql_error(); 
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
-    } 
-  } 
+if (isset($_POST['simpan'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $level = $_POST['level'];
+
+    $cekdata = "SELECT username FROM t_user WHERE username='$username'";
+    $ada = mysqli_query($koneksi, $cekdata);
+
+    if (mysqli_num_rows($ada) > 0) {
+        echo '<b>Username sudah ada</b>';
+    } else {
+        $query = "INSERT INTO t_user VALUES (null, '$username', md5('$password'), '$level')";
+        if (mysqli_query($koneksi, $query)) {
+            echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
+        } else {
+            echo "Gagal menyimpan data karena : " . mysqli_error($koneksi);
+        }
+    }
+}
 
   ?>
 

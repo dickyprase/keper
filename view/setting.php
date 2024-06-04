@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  //error_reporting(0);
   session_start();
   if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
@@ -10,35 +10,42 @@
   <li class="active"><?php echo ucfirst($page) ; ?></li>
 </ul>
 <?php
-	include "./inc/config.php";
-	$data = mysql_query("SELECT * FROM t_setting where id='1' LIMIT 1 ") or die (mysql_error());
-	$r=mysql_fetch_array($data);
+
+	
+	$query = "SELECT * FROM t_setting WHERE id=1 LIMIT 1";
+	$result = mysqli_query($koneksi, $query);
+
+    //$row = mysqli_fetch_assoc($result);
+    while ($row = mysqli_fetch_array($result)) {
+
 ?>
 <fieldset>
 	<legend>Data Profil Toko</legend>
-	<form class="form-horizontal"  method="post">	  
+	<form class="form-horizontal"  method="post" enctype="multipart/form-data">	
+	<input type="hidden" name="gambarLama" value="<?= $row['logo'] ?>"/>
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Nama Toko</label>
 	    <div class="col-sm-4">
-	      <input type="text" name="nama" value="<?php echo $r[nama]; ?>" class="form-control" placeholder="Nama Toko">
+	      <input type="text" name="nama" value="<?php echo $row['nama']; ?>" class="form-control" placeholder="Nama Toko">
 	    </div>
 	  </div>	  
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Alamat</label>
 	    <div class="col-sm-5">
-	      <textarea class="form-control" name="alamat" rows="3"><?php echo $r[alamat]; ?></textarea>
+	      <textarea class="form-control" name="alamat" rows="3"><?php echo $row['alamat']; ?></textarea>
 	    </div>
 	  </div>
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Nama Pemilik</label>
 	    <div class="col-sm-3">
-	      <input type="text" class="form-control" value="<?php echo $r[pemilik]; ?>" name="pemilik" placeholder="Nama Pemilik">
+	      <input type="text" class="form-control" value="<?php echo $row['pemilik']; ?>" name="pemilik" placeholder="Nama Pemilik">
 	    </div>
 	  </div>
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Logo</label>
 	    <div class="col-sm-4">
-	      <input type="file" class="form-control" name="logo">
+    	  <img src="img/<?= $setting['logo'] ?>" alt="Preview" width="100px">	
+	      <input type="file" class="form-control" name="gambar">
 	    </div>
 	  </div>	  
 	  <div class="form-group">
@@ -48,12 +55,79 @@
 	    </div>
 	  </div>
 	  <?php  
+    }
+    
+
+
+
+function upload() {
+
+	$namaFile = $_FILES['gambar']['name'];
+	$ukuranFile = $_FILES['gambar']['size'];
+	$error = $_FILES['gambar']['error'];
+	$tmpName = $_FILES['gambar']['tmp_name'];
+
+	// cek apakah tidak ada gambar yang diupload
+	if( $error === 4 ) {
+		echo "<script>
+				alert('pilih gambar terlebih dahulu!');
+			  </script>";
+		return false;
+	}
+
+	// cek apakah yang diupload adalah gambar
+	$ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
+	$ekstensiGambar = explode('.', $namaFile);
+	$ekstensiGambar = strtolower(end($ekstensiGambar));
+	if( !in_array($ekstensiGambar, $ekstensiGambarValid) ) {
+		echo "<script>
+				alert('yang anda upload bukan gambar!');
+			  </script>";
+		return false;
+	}
+
+	// cek jika ukurannya terlalu besar
+	if( $ukuranFile > 1000000 ) {
+		echo "<script>
+				alert('ukuran gambar terlalu besar!');
+			  </script>";
+		return false;
+	}
+
+	// lolos pengecekan, gambar siap diupload
+	// generate nama gambar baru
+	$namaFileBaru = uniqid();
+	$namaFileBaru .= '.';
+	$namaFileBaru .= $ekstensiGambar;
+
+	move_uploaded_file($tmpName, 'img/' . $namaFileBaru);
+
+	return $namaFileBaru;
+}
+	  
   
 	  if(isset($_POST['simpan']))
 	  {
-	      mysql_query("UPDATE t_setting SET nama = '".$_POST['nama']."', alamat = '".$_POST['alamat']."', pemilik = '".$_POST['pemilik']."' WHERE id = '1'") or die (mysql_error());
 	      
-	      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=index.php">';
+	    $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
+		$alamat = mysqli_real_escape_string($koneksi, $_POST['alamat']);
+		$pemilik = mysqli_real_escape_string($koneksi, $_POST['pemilik']);
+		$gambarLama = mysqli_real_escape_string($koneksi, $_POST['gambarLama']);
+		
+		if( $_FILES['gambar']['error'] === 4 ) {
+			$gambar = $gambarLama;
+		} else {
+			$gambar = upload();
+		}
+		
+
+		$query = "UPDATE t_setting SET nama = '$nama', alamat = '$alamat', pemilik = '$pemilik', logo= '$gambar' WHERE id = 1";
+		
+		if (mysqli_query($koneksi, $query)) {
+		    echo '<META HTTP-EQUIV="Refresh" Content="0; URL=index.php">';
+		} else {
+		    echo "Error dalam eksekusi query: " . mysqli_error($conn);
+		}
 	  }
 	  ?>
 	</form>

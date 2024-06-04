@@ -9,28 +9,19 @@ $id = $_SESSION['id'];
   <li class="active"><?php echo ucfirst($action) ; ?> Data</li>
 </ul>
       <?php
-        include "./inc/config.php";
-        $query=mysql_query("SELECT * from t_user WHERE id_pelanggan='$_GET[id]' " ) or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+        $query = "SELECT * FROM t_user WHERE id='" . $_GET['id'] . "'";
+          $result = mysqli_query($koneksi, $query);
+
+          $no = 1;
+          while ($lihat = mysqli_fetch_array($result)) {
       ?> 
 <form class="form-horizontal" method="POST">
   <fieldset>
     <legend>Update Data User</legend>
     <div class="form-group">
-      <label class="col-sm-2 control-label">ID Pelanggan</label>
+      <label class="col-sm-2 control-label">ID User</label>
       <div class="col-sm-3">
-        <select name="id" class="form-control">
-        <?php
-          include "./inc/config.php";
-          $pos=mysql_query("select * from t_pelanggan order by id_pelanggan");
-          while($r_pos=mysql_fetch_array($pos) ){
-            ?>
-            <option <?php if( $lihat['id_pelanggan']==$r_pos['id_pelanggan']) {echo "selected"; } ?> value='<?php echo $r_pos['id_pelanggan'] ;?>'><?php echo $r_pos['id_pelanggan'] ;?> <?php echo $r_pos['nama'] ;?></option>
-          <?php
-          };
-          ?>
-        </select>
+        <input disabled type="text" class="form-control" name="id" required value="<?= $lihat['id'] ;?>">
       </div>
     </div>
     <div class="form-group">
@@ -42,7 +33,7 @@ $id = $_SESSION['id'];
     <div class="form-group">
       <label class="col-sm-2 control-label">Password</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="password" value="******">
+        <input type="text" class="form-control" name="password" value="*****">
       </div>
     </div>
     <div class="form-group">
@@ -70,9 +61,17 @@ $id = $_SESSION['id'];
 };
 ?>
   <?php 
-  if(isset($_POST['simpan'])){
-    $query=mysql_query("UPDATE t_user SET username='$_POST[username]', password=md5('$_POST[password]'), level='$_POST[level]' WHERE id_pelanggan='$_POST[id]'")or die(mysql_error());
-    
-    echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
-    } 
+  if (isset($_POST['simpan'])) {
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      $level = $_POST['level'];
+      $id = $_POST['id'];
+  
+      $query = "UPDATE t_user SET username='$username', password=MD5('$password'), level='$level' WHERE id=$id";
+      if (mysqli_query($koneksi, $query)) {
+          echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
+      } else {
+          die("Gagal menyimpan data karena : " . mysqli_error($koneksi));
+      }
+    }
   ?>

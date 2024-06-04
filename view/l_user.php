@@ -30,7 +30,7 @@
     </thead>
     <tbody>
       <?php
-        $query = "SELECT * FROM t_user WHERE level != 'admin'";
+        $query = "SELECT * FROM t_user WHERE id != 1  ";
         $result = mysqli_query($koneksi, $query);
         $no=1;
         while ($lihat = mysqli_fetch_array($result)) {
@@ -43,8 +43,8 @@
         <td><?php echo $lihat['level'] ?></td>
         
         <td align="center">
-          <a href="?page=user&aksi=edit&id=<?php echo $lihat['id_pelanggan'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
-          <a href="?page=user&aksi=delete&id=<?php echo $lihat['id_pelanggan'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+          <a href="?page=user&aksi=edit&id=<?php echo $lihat['id'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
+          <a href="?page=user&aksi=delete&id=<?php echo $lihat['id'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
       </td>
       </tr>
       <?php
