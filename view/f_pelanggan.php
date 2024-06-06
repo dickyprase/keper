@@ -1,7 +1,6 @@
 <?php
-  //session_start();
-  include "./inc/function.php";
-  if($_SESSION['level']=="operator"){
+
+  if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
 }else{
 ?>
@@ -35,6 +34,18 @@
 	    <label class="col-sm-2 control-label">Email</label>
 	    <div class="col-sm-4">
 	      <input type="text" class="form-control" name="email" placeholder="Email">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label class="col-sm-2 control-label">username</label>
+	    <div class="col-sm-4">
+	      <input type="text" class="form-control" name="username" placeholder="username">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label class="col-sm-2 control-label">password</label>
+	    <div class="col-sm-4">
+	      <input type="text" class="form-control" name="password" placeholder="password">
 	    </div>
 	  </div>
 	  <div class="form-group">
@@ -73,14 +84,16 @@ if (isset($_POST['simpan'])) {
     $telpon = $_POST['telpon'];
     $email = $_POST['email'];
     $paket = $_POST['paket'];
+	$username = $_POST['username'];
+	$password = $_POST['password'];
 
-    $cekdata = "SELECT nama FROM t_pelanggan WHERE nama='$nama'";
+    $cekdata = "SELECT nama FROM t_users WHERE nama='$nama'";
     $ada = mysqli_query($koneksi, $cekdata);
 
     if (mysqli_num_rows($ada) > 0) {
         echo '<b>Pelanggan sudah ada</b>';
     } else {
-        $query = "INSERT INTO t_pelanggan VALUES (null, $paket, '$nama', '$alamat', '$telpon', '$email')";
+        $query = "INSERT INTO t_users VALUES (null, $paket, '$nama', '$alamat', '$telpon', '$email', '$username', md5('$password'), 'pelanggan')";
         if (mysqli_query($koneksi, $query)) {
             echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
         } else {

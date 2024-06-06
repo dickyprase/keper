@@ -1,7 +1,5 @@
 <?php
-  //error_reporting(0);
- // session_start();
-  include "./inc/config.php";
+
   if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
 }else{
@@ -33,7 +31,7 @@
   	</thead>
   	<tbody>
   		  <?php
-          $query = "SELECT t_pelanggan.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_pelanggan LEFT JOIN t_paket ON t_pelanggan.id_paket = t_paket.id";
+          $query = "SELECT t_users.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_users LEFT JOIN t_paket ON t_users.id_paket = t_paket.id WHERE t_users.level != 'admin' ORDER BY t_users.id ASC";
           $result = mysqli_query($koneksi, $query);
           $no=1;
           while ($lihat = mysqli_fetch_array($result)) {
@@ -72,7 +70,7 @@
   }else if($action == "delete"){
     $id = $_GET['id'];
 
-    $query = "DELETE FROM t_pelanggan WHERE id='$id'";
+    $query = "DELETE FROM t_users WHERE id='$id'";
     if (mysqli_query($koneksi, $query)) {
         echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
     } else {

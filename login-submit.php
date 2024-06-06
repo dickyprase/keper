@@ -7,7 +7,7 @@
 	if(isset($_POST['btnSubmit'])){
 		
 	
-		$query = "SELECT * FROM t_user WHERE username='$username' AND password=MD5('$password')";
+		$query = "SELECT * FROM t_users WHERE username='$username' AND password=MD5('$password')";
 		$result = mysqli_query($koneksi, $query);
 	
 		if (!$result) {

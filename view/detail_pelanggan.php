@@ -4,10 +4,8 @@
   <li class="active"><?php echo ucfirst($action) ; ?> Pelanggan</li>
 </ul>
  <?php
-//  $query=mysql_query("SELECT t_pelanggan.*, t_paket.nama as nama_paket, t_paket.harga from t_pelanggan left join t_paket on t_pelanggan.id_paket=t_paket.id_paket where t_pelanggan.id_pelanggan='$_GET[id]'");
-//  $data=mysql_fetch_array($query);
 
-	$query = "SELECT t_pelanggan.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_pelanggan LEFT JOIN t_paket ON t_pelanggan.id_paket = t_paket.id WHERE t_pelanggan.id='" . $_GET['id'] . "'";
+	$query = "SELECT t_users.*, t_paket.nama AS nama_paket, t_paket.harga FROM t_users LEFT JOIN t_paket ON t_users.id_paket = t_paket.id WHERE t_users.id='" . $_GET['id'] . "'";
 	$result = mysqli_query($koneksi, $query);
 
 	$data = mysqli_fetch_array($result);
@@ -61,6 +59,20 @@
 						<div class="col-sm-10">
 							<label class="col-sm-0 control-label">:</label>
 							<label class="col-sm-0 control-label"><?php echo $data['nama_paket']; ?></label>
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label class="col-sm-2 control-label">username</label>
+						<div class="col-sm-10">
+							<label class="col-sm-0 control-label">:</label>
+							<label class="col-sm-0 control-label"><?php echo $data['username']; ?></label>
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label class="col-sm-2 control-label">password</label>
+						<div class="col-sm-10">
+							<label class="col-sm-0 control-label">:</label>
+							<label class="col-sm-0 control-label"><?php echo $data['password'] ?> => [encrypted]</label>
 						</div>
 					  </div>
 					  <div class="form-group">

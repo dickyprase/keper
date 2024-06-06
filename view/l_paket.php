@@ -1,8 +1,5 @@
 <?php
-  error_reporting(0);
-  session_start();
-  include "./inc/function.php";
-  $_SESSION['info'];
+
   if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
 }else{

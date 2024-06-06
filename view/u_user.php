@@ -1,6 +1,4 @@
 <?php
-include "./inc/config.php";
-include "./inc/function.php";
 $id = $_SESSION['id'];
 ?>
 <ul class="breadcrumb">
@@ -9,28 +7,38 @@ $id = $_SESSION['id'];
   <li class="active"><?php echo ucfirst($action) ; ?> Data</li>
 </ul>
       <?php
-        include "./inc/config.php";
-        $query=mysql_query("SELECT * from t_user WHERE id_pelanggan='$_GET[id]' " ) or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+        $query = mysqli_query($koneksi, "SELECT * FROM t_users WHERE id='{$_GET['id']}'") or die(mysqli_error($koneksi));
+        $no = 1;
+        while($lihat = mysqli_fetch_array($query)){  //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
       ?> 
 <form class="form-horizontal" method="POST">
   <fieldset>
     <legend>Update Data User</legend>
     <div class="form-group">
-      <label class="col-sm-2 control-label">ID Pelanggan</label>
+      <label class="col-sm-2 control-label">Nama</label>
       <div class="col-sm-3">
-        <select name="id" class="form-control">
-        <?php
-          include "./inc/config.php";
-          $pos=mysql_query("select * from t_pelanggan order by id_pelanggan");
-          while($r_pos=mysql_fetch_array($pos) ){
-            ?>
-            <option <?php if( $lihat['id_pelanggan']==$r_pos['id_pelanggan']) {echo "selected"; } ?> value='<?php echo $r_pos['id_pelanggan'] ;?>'><?php echo $r_pos['id_pelanggan'] ;?> <?php echo $r_pos['nama'] ;?></option>
-          <?php
-          };
-          ?>
-        </select>
+        <input type="text" class="form-control" name="nama" value="<?php echo $lihat['nama']; ?>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Alamat</label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" name="alamat" value="<?php echo $lihat['alamat']; ?>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">No HP</label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" name="no_hp" value="<?php echo $lihat['no_hp']; ?>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-3">
+        <input type="email" class="form-control" name="email" value="<?php echo $lihat['email']; ?>">
       </div>
     </div>
     <div class="form-group">
@@ -42,18 +50,9 @@ $id = $_SESSION['id'];
     <div class="form-group">
       <label class="col-sm-2 control-label">Password</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="password" value="******">
+        <input type="text" class="form-control" name="password" value="" placeholder="encrypted">
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Level</label>
-      <div class="col-sm-3">
-        <select name="level" class="form-control">
-          <option <?php if( $lihat['level']=='admin'){echo "selected"; } ?> value='admin'>Admin</option>
-          <option <?php if( $lihat['level']=='pelanggan'){echo "selected"; } ?> value='pelanggan'>Pelanggan</option>          
-        </select>
-      </div>
-    </div>  
    
    <input type="hidden" name="id_pelanggan" value="<?php echo "$_SESSION[id]" ;?>">
     <div class="form-group">

@@ -1,8 +1,4 @@
-<?php
-include "./inc/config.php";
-include "./inc/function.php";
 
-?>
 <ul class="breadcrumb">
   <li><a href="./">Home</a></li>
   <li><a href="?page=<?php echo $page ;?>"><?php echo ucfirst($page) ; ?></a></li>

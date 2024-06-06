@@ -1,7 +1,6 @@
 <?php
-  session_start();
-  include "./inc/function.php";
-  if($_SESSION['level']=="operator"){
+
+  if($_SESSION['level']=="pelanggan"){
   header("location:index.php");
 }else{
 ?>
@@ -13,21 +12,6 @@
 <fieldset>
 	<legend>Tambah Data User</legend>
 	<form class="form-horizontal"  method="post">	  
-	  <div class="form-group">
-	    <label class="col-sm-2 control-label">ID Pelanggan</label>
-	    <div class="col-sm-4">
-	      	<select name="id" onchange="showUser(this.value)" class="form-control">
-				<option value="">--Pilih ID Pelanggan--</option>
-				<?php
-					include "./inc/config.php";
-					$pos=mysql_query("select * from t_pelanggan order by id_pelanggan");
-					while($r_pos=mysql_fetch_array($pos)){
-						echo "<option value=\"$r_pos[id_pelanggan]\">$r_pos[id_pelanggan]  $r_pos[nama] </option>";
-					}
-                ?>
-			</select>
-	    </div>
-	  </div> 
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">Username</label>
 	    <div class="col-sm-3">

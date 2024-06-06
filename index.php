@@ -7,7 +7,6 @@
   $result = mysqli_query($koneksi, $query);  
   $setting = mysqli_fetch_assoc($result);
 
-  //$_SESSION['level'];
   if(empty($_SESSION['username'])){
     header("location:login.php");
   }else{
@@ -109,7 +108,7 @@
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Pengaturan <span class="caret"></span></a>
               <ul class="dropdown-menu" aria-labelledby="themes">
-                <li><a href="?page=user">Manajemen User</a></li>                
+                <!-- <li><a href="?page=user">Manajemen User</a></li>                 -->
                 <li><a href="?page=profile">Profile</a></li>
               </ul>
             </li>
