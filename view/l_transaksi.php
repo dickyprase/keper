@@ -1,5 +1,4 @@
 <?php
-include "./inc/function.php";
 $id = $_SESSION['id'];
 
 ?>
@@ -33,35 +32,34 @@ $id = $_SESSION['id'];
   	<tbody align="center">
   		
       <?php
-        include "./inc/config.php";
         if($_SESSION['level'] == 'admin'){
-        $query=mysql_query("SELECT * from t_transaksi order by id_transaksi ASC") or die (mysql_error());  //mengambil data tabel transaksi dan memasukkan nya ke variabel query        
-        }else{
-        $query=mysql_query("SELECT * from t_transaksi WHERE nama='$_SESSION[name]' order by id_transaksi ASC ") or die (mysql_error());  //mengambil data tabel pelanggan dan memasukkan nya ke variabel query
-
+          $query = mysqli_query($koneksi, "select a.id_transaksi, b.nama, a.nominal, a.bukti, a.tgl_bayar, a.tgl_validasi, a.status from t_transaksi a join t_users b on a.id_user=b.id") or die (mysqli_error($koneksi));   
+        } else {
+          $query = mysqli_query($koneksi, "SELECT * from t_transaksi WHERE nama='$_SESSION[name]' order by id_transaksi ASC ") or die (mysqli_error($koneksi)); 
         }
-        $no=1;                    //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+
+        $no = 1;
+        while($lihat = mysqli_fetch_array($query)){  
         ?>    
       <tr>
-        <td><?php echo $no++; ?></td>         <!--menampilkan nomor dari variabel no-->
-        <td><?php echo $lihat['id_transaksi'] ?></td>    <!--menampilkan data id transaksi-->
+        <td><?php echo $no++; ?></td>     
+        <td><?php echo $lihat['id_transaksi'] ?></td>  
         <td><?php echo $lihat['nama'] ?></td>
-        <td><?php echo TanggalIndo($lihat['tgl_bayar']); ?></td>     <!--menampilkan data tgl bayar-->
+        <td><?php echo TanggalIndo($lihat['tgl_bayar']); ?></td>     
         <td><?php
         if ($lihat['tgl_validasi'] == '0000-00-00'){
         echo "<span class='label label-warning'>".ucwords("belum validasi")."</span>";
         }else{
         echo TanggalIndo($lihat['tgl_validasi']); 
-        }?></td>      <!--menampilkan data tgl validasi-->
-        <td><?php echo "Rp." . number_format( $lihat['nominal'] , 0 , ',' , '.' ); ?></td>     <!--menampilkan data nominal-->
+        }?></td>     
+        <td><?php echo "Rp." . number_format( $lihat['nominal'] , 0 , ',' , '.' ); ?></td>    
         <td><?php if ($lihat['status']=='lunas'){ ?>
           <span class="label label-success"><?php echo ucfirst($lihat['status']) ?></span>
           <?php }else{ ?>
           <span class="label label-danger"><?php echo ucfirst($lihat['status']) ?></span>
           <?php }?>
-        </td>     <!--menampilkan data status-->
-        <td><?php echo $lihat['bukti'] ?></td>     <!--menampilkan data bukti-->
+        </td>    
+        <td><?php echo $lihat['bukti'] ?></td>    
         
         <td align="center">          
   				<a href="?page=transaksi&aksi=detail&id=<?php echo $lihat['id_transaksi'] ;?>" class="btn btn-success btn-sm" title="Lihat Data"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> 
@@ -97,7 +95,7 @@ $id = $_SESSION['id'];
 
 <?php
 }else if($action == "delete"){
-$hapus=mysql_query("DELETE from t_transaksi WHERE id_transaksi='$_GET[id]'") or die(mysql_error());
+$hapus=mysqli_query($koneksi, "DELETE from t_transaksi WHERE id_transaksi='$_GET[id]'") or die(mysqli_error($koneksi));
 echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=transaksi">';
 
 }else{

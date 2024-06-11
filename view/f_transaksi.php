@@ -1,6 +1,5 @@
 <?php
-include "./inc/config.php";
-include "./inc/function.php";
+
 $id = $_SESSION['id'];
 ?>
 <ul class="breadcrumb">
@@ -13,15 +12,23 @@ $id = $_SESSION['id'];
   <fieldset>
     <legend>Tambah Data Transaksi</legend>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Id Transaksi</label>
-      <div class="col-sm-3">
-        <input type="text" class="form-control" name="id" required placeholder="Id Transaksi">
-      </div>
-    </div>
-    <div class="form-group">
       <label class="col-sm-2 control-label">Nama Pelanggan</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" name="nama" required placeholder="Nama Pelanggan">
+        <select class="form-control" name="nama" required>
+          <option selected disabled>- PILIH -</option>
+          <?php
+          $sql = "SELECT * FROM t_users WHERE level !='admin'";
+          $result = $koneksi->query($sql);
+
+          if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+              echo "<option value='" . $row["id"]. "'>" . $row["nama"]. "</option>";
+            }
+          } else {
+            echo "0 results";
+          }
+          ?>
+        </select>
       </div>
     </div>
     <div class="form-group">
@@ -44,7 +51,7 @@ $id = $_SESSION['id'];
     </div>
     
    <input type="hidden" name="info" value="1">
-   <input type="hidden" name="id_pelanggan" value="<?php echo "$_SESSION[id]" ;?>">
+   <input type="hidden" name="id_pelanggan" value="<?php echo $_SESSION['id'] ;?>">
     <div class="form-group">
       <div class="col-sm-10 col-sm-offset-2">
         <button type="reset" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Reset</button>
@@ -59,22 +66,28 @@ $id = $_SESSION['id'];
 </form>
 
   <?php 
-  $maxsize = 1024 * 200; // maksimal 200 KB (1KB = 1024 Byte)
-  $valid_ext = array('jpg','jpeg','png','gif','bmp');
-  if(isset($_POST['simpan']) && $_POST['file']['size']<=$maxsize){
-    $ext = strtolower(end(explode('.', $_POST['file']['name'])));
-    $cekdata="SELECT id_transaksi from t_transaksi where id_transaksi='".$_POST['id']."'";
-    $cekdata="SELECT nama from t_transaksi where nama='".$_POST['nama']."'";  
-    $ada=mysql_query($cekdata) or die(mysql_error()); 
-    $data="SELECT * from t_transaksi";
-    $aya=mysql_query($data) or die(mysql_error());
-    if(mysql_num_rows($ada)>0 && in_array($ext, $valid_array)) { 
-      writeMsg('invoice.sama');
-    }  else { 
-      $query="INSERT INTO t_transaksi (id_transaksi, nama,  tgl_bayar, nominal, bukti) VALUES ('".$_POST['id']."','".$_POST['nama']."','".$_POST['tgl_bayar']."','".str_replace(".","",$_POST['nominal'])."','".move_uploaded_file($_POST['file']['tmp_name'], 'upload/'.$_POST['file']['name'])."')"; 
-      mysql_query($query) or die(mysql_error()); 
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=transaksi">';
-    } 
-  } 
+
+  if(isset($_POST['info'])) {
+    $id_user = $_POST['nama'];
+    $nominal = $_POST['nominal'];
+    $tgl_bayar = $_POST['tgl_bayar'];
+    $tgl_validasi = date('Y-m-d');
+    $status = '0';
+    $bukti = $_FILES['file']['name'];
+    $tmp = $_FILES['file']['tmp_name'];
+    $path = "img/".$bukti;
+    if(move_uploaded_file($tmp, $path)) {
+      $sql = "INSERT INTO t_transaksi (id_user, nominal, bukti, tgl_bayar, tgl_validasi, status) VALUES ('$id_user', '$nominal', '$bukti', '$tgl_bayar', '$tgl_validasi', '$status')";
+      if ($koneksi->query($sql) === TRUE) {
+        echo "<script>alert('Data berhasil disimpan!');</script>";
+        echo "<script>document.location.href='?page=transaksi';</script>";
+      } else {
+        echo "Error: " . $sql . "<br>" . $koneksi->error;
+      }
+    } else {
+      echo "Gagal Upload";
+    }
+  }
+
 
   ?>

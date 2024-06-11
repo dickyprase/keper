@@ -2,6 +2,7 @@
   //error_reporting(0);
   session_start();  
   include "inc/config.php";
+  include "inc/function.php";
 
   $query = "SELECT * FROM t_setting LIMIT 1";
   $result = mysqli_query($koneksi, $query);  
@@ -131,7 +132,7 @@
 <div id="wadah">
           
   <div id="kepala">
-        <img src="img/logo.png" class="thumbnail span3" style="display: inline; float: left; margin-right: 20px; width: 130px; height: 130px">
+        <img src="img/<?= $setting['logo'] ?>" class="thumbnail span3" style="display: inline; float: left; margin-right: 20px; width: 130px; height: 130px">
         <h2 style="margin: 15px 0 10px 0; color: #000;"><?php echo $setting['nama'] ?></h2>
         <div style="color: #000; font-size: 16px; font-family: Tahoma" class="clearfix"><b>Alamat : <?php echo $setting['alamat'] ?></b></div>
       </div>
