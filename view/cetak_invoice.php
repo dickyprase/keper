@@ -1,7 +1,7 @@
 <?php
 include "../inc/config.php";
-$owner = mysql_query("SELECT * FROM t_setting limit 1") or die (mysql_error());
-$seting =mysql_fetch_array($owner);
+$owner = mysqli_query($koneksi, "SELECT * FROM t_setting limit 1") or die (mysqli_error($koneksi));
+$seting = mysqli_fetch_array($owner);
 $id_transaksi=$_GET['id'];
 ?>
 <!DOCTYPE html>
@@ -15,15 +15,20 @@ $id_transaksi=$_GET['id'];
     <link href="../css/custom-style.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            window.print();
+        }
+    </script>
 </head>
 <body >
 <div class="container">
 <?php
 include "../inc/config.php";
 include "../inc/function.php";
-$query = "SELECT t_pelanggan.*, t_paket.id_paket,t_paket.nama as nama_paket,t_paket.harga, t_transaksi.* from t_pelanggan, t_paket, t_transaksi WHERE t_pelanggan.nama=t_transaksi.nama AND t_pelanggan.id_paket=t_paket.id_paket AND t_transaksi.id_transaksi='$id_transaksi'";
-$result = mysql_query($query) or die(mysql_error());
-while ($data = mysql_fetch_array($result)){
+$query = "SELECT t_users.*, t_paket.id,t_paket.nama as nama_paket,t_paket.harga, t_transaksi.* from t_users, t_paket, t_transaksi WHERE t_users.id=t_transaksi.id_user AND t_users.id_paket=t_paket.id AND t_transaksi.id_transaksi='$id_transaksi'";
+$result = mysqli_query($koneksi, $query) or die(mysqli_error($koneksi));
+while ($data = mysqli_fetch_array($result)){
     ?>
     <div  class="row contact-info">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -39,7 +44,7 @@ while ($data = mysql_fetch_array($result)){
         <div class="col-lg-12 col-md-12 col-sm-12">
             <hr />
              <span>
-                 <strong>#<?php echo $data['id_transaksi'] ?> </strong>
+                 <strong>#INVOICE-00<?php echo $data['id_transaksi'] ?> </strong>
              </span>
              
             <hr />
@@ -91,14 +96,6 @@ while ($data = mysql_fetch_array($result)){
 
                     </tbody>
                 </table>
-            </div>
-            <hr />
-            <div class="ttl-amts">
-                <h5>  Total : <?php echo number_format( $data['nominal'] , 0 , ',' , '.' ); ?> </h5>
-            </div>
-            <hr />
-            <div class="ttl-amts">
-                <h5>  Sudah termasuk PPN 10% </h5>
             </div>
             <hr />
             <div class="ttl-amts">

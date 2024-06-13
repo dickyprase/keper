@@ -1,6 +1,4 @@
 <?php
-include "./inc/config.php";
-include "./inc/function.php";
 $id = $_SESSION['id'];
 $level = $_SESSION['level'];
 ?>
@@ -19,7 +17,7 @@ $level = $_SESSION['level'];
     <label for="exampleInputEmail2">Sampai</label>
     <input type="text" class="form-control" id="sampai" name="sampai" placeholder="Sampai">
   </div>
-  <input type="hidden" name="id_pelanggan" value="<?php echo "$_SESSION[id]" ;?>">
+  <input type="hidden" name="id" value="<?php echo "$_SESSION[id]" ;?>">
   <input type="hidden" name="level" value="<?php echo "$_SESSION[level]" ;?>">
   <button type="submit" class="btn btn-info">Cetak</button>
 </form>

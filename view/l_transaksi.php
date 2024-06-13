@@ -35,7 +35,7 @@ $id = $_SESSION['id'];
         if($_SESSION['level'] == 'admin'){
           $query = mysqli_query($koneksi, "select a.id_transaksi, b.nama, a.nominal, a.bukti, a.tgl_bayar, a.tgl_validasi, a.status from t_transaksi a join t_users b on a.id_user=b.id") or die (mysqli_error($koneksi));   
         } else {
-          $query = mysqli_query($koneksi, "SELECT * from t_transaksi WHERE nama='$_SESSION[name]' order by id_transaksi ASC ") or die (mysqli_error($koneksi)); 
+          $query = mysqli_query($koneksi, "select a.id_transaksi, b.nama, a.nominal, a.bukti, a.tgl_bayar, a.tgl_validasi, a.status from t_transaksi a join t_users b on a.id_user=b.id WHERE id_user='$_SESSION[id]' order by id_transaksi ASC ") or die (mysqli_error($koneksi));  
         }
 
         $no = 1;
@@ -59,14 +59,14 @@ $id = $_SESSION['id'];
           <span class="label label-danger"><?php echo ucfirst($lihat['status']) ?></span>
           <?php }?>
         </td>    
-        <td><?php echo $lihat['bukti'] ?></td>    
+        <td> <img src="img/<?= $lihat['bukti'] ?>" class="thumbnail span3" style="display: inline; float: left; margin-right: 20px; width: 90px; height: 90px"></td>    
         
         <td align="center">          
-  				<a href="?page=transaksi&aksi=detail&id=<?php echo $lihat['id_transaksi'] ;?>" class="btn btn-success btn-sm" title="Lihat Data"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> 
-  				<a href="?page=transaksi&aksi=edit&id=<?php echo $lihat['id_transaksi'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
-  				<a href="?page=transaksi&aksi=delete&id=<?php echo $lihat['id_transaksi'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>  		    
+  				
+          <a href="?page=transaksi&aksi=edit&id=<?php echo $lihat['id_transaksi'] ;?>" class="btn btn-info btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> 
+          <a href="?page=transaksi&aksi=delete&id=<?php echo $lihat['id_transaksi'] ;?>" onclick="javascript: return confirm('Anda yakin akan menghapus data ini ?')" class="btn btn-danger btn-sm" title="Hapus Data"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>  		    
           <?php if($lihat['status']=='lunas'){
-          ?>
+            ?>
           <a href="view/cetak_invoice.php?&id=<?php echo $lihat['id_transaksi'] ;?>" name="cetak" target="_blank" class="btn btn-info btn-sm" title="Cetak"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
           <?php
           }else{

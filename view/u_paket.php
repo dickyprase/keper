@@ -1,6 +1,4 @@
 <?php
-include "./inc/config.php";
-include "./inc/function.php";
 $id = $_SESSION['id'];
 
 ?>

@@ -40,7 +40,7 @@ $id = $_SESSION['id'];
     <div class="form-group">
       <label class="col-sm-2 control-label">Jumlah Bayar</label>
       <div class="col-sm-3">        
-        <input type="text" class="form-control" id="inputku" onkeydown="return numbersonly(this, event);" onkeyup="javascript:tandaPemisahTitik(this);" name="nominal" placeholder="Jumlah Bayar">
+        <input type="number" class="form-control" id="inputku" name="nominal" placeholder="Jumlah Bayar">
       </div>
     </div>    
     <div class="form-group">
@@ -61,8 +61,7 @@ $id = $_SESSION['id'];
     </div>
   </fieldset>
 
-  <?php  
-  ?>
+
 </form>
 
   <?php 
@@ -72,7 +71,7 @@ $id = $_SESSION['id'];
     $nominal = $_POST['nominal'];
     $tgl_bayar = $_POST['tgl_bayar'];
     $tgl_validasi = date('Y-m-d');
-    $status = '0';
+    $status = 'lunas';
     $bukti = $_FILES['file']['name'];
     $tmp = $_FILES['file']['tmp_name'];
     $path = "img/".$bukti;

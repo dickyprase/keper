@@ -1,6 +1,4 @@
 <?php
-include "./inc/config.php";
-include "./inc/function.php";
 $id = $_SESSION['id'];
 
 ?>
@@ -10,10 +8,9 @@ $id = $_SESSION['id'];
   <li class="active"><?php echo ucfirst($action) ; ?> Data</li>
 </ul>
       <?php
-        include "./inc/config.php";
-        $query=mysql_query("SELECT * from t_transaksi WHERE id_transaksi='$_GET[id]' " ) or die (mysql_error());  //mengambil data tabel transaksi dan memasukkan nya ke variabel query
-        $no=1;   //membuat nomor pada tabel
-        while($lihat=mysql_fetch_array($query)){    //mengeluarkan isi data dengan mysql_fetch_array dengan perulangan
+        $query=mysqli_query($koneksi, "SELECT * from t_transaksi WHERE id_transaksi='$_GET[id]' " ) or die (mysqli_error($koneksi));
+        $no=1;
+        while($lihat=mysqli_fetch_array($query)){
       ?> 
 <form class="form-horizontal" method="POST">
   <fieldset>
@@ -21,7 +18,7 @@ $id = $_SESSION['id'];
     <div class="form-group">
       <label class="col-sm-2 control-label">Id Transaksi</label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" readonly name="id" required value="<?php echo $lihat['id_transaksi'] ;?>">
+        <input type="text" class="form-control" readonly name="idtrx" required value="<?php echo $lihat['id_transaksi'] ;?>">
       </div>
     </div>
     <div class="form-group">
@@ -31,7 +28,7 @@ $id = $_SESSION['id'];
       </div>
     </div>
     
-    <?php if($_SESSION['level'] == 'admin'){ ;?>
+    <?php if($_SESSION['level'] == 'admin'){ ?>
     <div class="form-group">
       <label class="col-sm-2 control-label">Tanggal Validasi</label>
       <div class="col-sm-3">
@@ -39,7 +36,7 @@ $id = $_SESSION['id'];
       </div>
     </div>
     
-    <?php }; ?>
+    <?php } ?>
     <div class="form-group">
       <label class="col-sm-2 control-label">Jumlah Bayar</label>
       <div class="col-sm-3">
@@ -47,31 +44,32 @@ $id = $_SESSION['id'];
       </div>
     </div>
     
-    <?php if($_SESSION['level'] == 'admin'){ ;?>  
+    <?php if($_SESSION['level'] == 'admin'){ ?>  
     <div class="form-group">
       <label class="col-sm-2 control-label">Status</label>
       <div class="col-sm-3">
-        <select name="status" class="form-control">
-          <option <?php if( $lihat['status']=='lunas'){echo "selected"; } ?> value='lunas'>Lunas</option>
-          <option <?php if( $lihat['status']=='pending'){echo "selected"; } ?> value='pending'>Pending</option>          
-        </select>
+
+      <select name="status" class="form-control">
+        <option value="<?= $lihat['status'] ?>" selected>(<?= $lihat['status'] ?>)</option>
+        <option value="lunas">Lunas</option>
+        <option value="pending">Pending</option>
+      </select>
+        
       </div>
     </div>  
     
-    <?php }; ?>
-    <?php if($_SESSION['level'] == 'pelanggan'){ ;?>   
+    <?php } ?>
     <div class="form-group">
       <label class="col-sm-2 control-label">Bukti Pembayaran</label>
       <div class="col-sm-3">
-        <input type="file" id="exampleInputFile" name="file">
+        <img src="img/<?= $lihat['bukti'] ?>" class="thumbnail span3" style="display: inline; float: left; margin-right: 20px; width: 130px; height: 130px">
       </div>
     </div> 
-    <?php }; ?>
    
-   <input type="hidden" name="nama" value="<?php echo "$_SESSION[name]" ;?>">
+   <input type="hidden" name="id" value="<?= $_SESSION['id'] ?>">
     <div class="form-group">
       <div class="col-sm-10 col-sm-offset-2">
-        <button type="reset" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Reset</button>
+        
         <button type="submit" name="simpan" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Simpan</button>
         <a href="?page=transaksi" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Batal </a>
       </div>
@@ -84,11 +82,7 @@ $id = $_SESSION['id'];
 ?>
   <?php 
   if(isset($_POST['simpan'])){
-    if($_SESSION['level'] == 'admin'){
-    $query=mysql_query("UPDATE t_transaksi SET tgl_bayar='$_POST[tgl_bayar]', tgl_validasi='$_POST[tgl_validasi]', nominal='$_POST[nominal]', status='$_POST[status]' WHERE id_transaksi='$_POST[id]'")or die(mysql_error());
-    }else{
-      $query=mysql_query("UPDATE t_transaksi SET tgl_bayar='$_POST[tgl_bayar]', tgl_validasi='$_POST[tgl_validasi]', nominal='$_POST[nominal]' WHERE id_transaksi='$_POST[id]'")or die(mysql_error());
-    }
+      $query=mysqli_query($koneksi, "UPDATE t_transaksi SET tgl_bayar='{$_POST['tgl_bayar']}', tgl_validasi='{$_POST['tgl_validasi']}', nominal='{$_POST['nominal']}', status='{$_POST['status']}' WHERE id_transaksi='{$_GET['id']}'") or die(mysqli_error($koneksi));
     echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=transaksi">';
   } 
   ?>
