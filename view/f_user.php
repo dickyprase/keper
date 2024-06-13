@@ -46,19 +46,27 @@
 	  ?>
 	</form>
 </fieldset>
+<?php
 
-  <?php 
-  if(isset($_POST['simpan'])){
-    $cekdata="SELECT id_pelanggan from t_user where id_pelanggan='".$_POST['id']."'"; 
-    $ada=mysql_query($cekdata) or die(mysql_error()); 
-    if(mysql_num_rows($ada)>0) { 
-      writeMsg('pelanggan.sama');
-    } else { 
-      $query="INSERT INTO t_user VALUES ('".$_POST['id']."','".$_POST['username']."','".md5($_POST['password'])."','".$_POST['level']."')"; 
-      mysql_query($query) or die("Gagal menyimpan data karena Id Pelanggan belum dipilih!").mysql_error(); 
-      echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
-    } 
-  } 
+if (isset($_POST['simpan'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $level = $_POST['level'];
+
+    $cekdata = "SELECT username FROM t_user WHERE username='$username'";
+    $ada = mysqli_query($koneksi, $cekdata);
+
+    if (mysqli_num_rows($ada) > 0) {
+        echo '<b>Username sudah ada</b>';
+    } else {
+        $query = "INSERT INTO t_user VALUES (null, '$username', md5('$password'), '$level')";
+        if (mysqli_query($koneksi, $query)) {
+            echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
+        } else {
+            echo "Gagal menyimpan data karena : " . mysqli_error($koneksi);
+        }
+    }
+}
 
   ?>
 

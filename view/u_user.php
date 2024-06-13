@@ -69,9 +69,17 @@ $id = $_SESSION['id'];
 };
 ?>
   <?php 
-  if(isset($_POST['simpan'])){
-    $query=mysql_query("UPDATE t_user SET username='$_POST[username]', password=md5('$_POST[password]'), level='$_POST[level]' WHERE id_pelanggan='$_POST[id]'")or die(mysql_error());
-    
-    echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
-    } 
+  if (isset($_POST['simpan'])) {
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      $level = $_POST['level'];
+      $id = $_POST['id'];
+  
+      $query = "UPDATE t_user SET username='$username', password=MD5('$password'), level='$level' WHERE id=$id";
+      if (mysqli_query($koneksi, $query)) {
+          echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=user">';
+      } else {
+          die("Gagal menyimpan data karena : " . mysqli_error($koneksi));
+      }
+    }
   ?>

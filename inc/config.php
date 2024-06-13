@@ -1,8 +1,8 @@
 <?php
 
 $servername = "localhost"; 
-$username = "root";
-$password = "";
+$username = "dicky";
+$password = "Kissmebaby12_";
 $database = "keper2";
 
 // Membuat koneksi

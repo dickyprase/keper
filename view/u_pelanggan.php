@@ -116,7 +116,7 @@ $id = $_SESSION['id'];
       if (mysqli_query($koneksi, $query)) {
           echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=pelanggan">';
       } else {
-          die("Gagal menyimpan data karena : " . mysqli_error($conn));
+          die("Gagal menyimpan data karena : " . mysqli_error($koneksi));
       }
     }
   };
